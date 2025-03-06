@@ -13,7 +13,7 @@
     </style>
   </head>
   <body>
-    <form id="form" onsubmit="">
+    <form id="form" onsubmit="callLambdaFunction(); return false;">
         <div class="form-control">
             <input type="text" id="inputText" placeholder="Enter some text here" />
         </div>
@@ -24,5 +24,36 @@
             <input type="text" readonly id="outputText" placeholder="Output will appear here" />
         </div>
     </form>
+    <script type="text/javascript" src="lib/axios/dist/axios.standalone.js"></script>
+    <script type="text/javascript" src="lib/CryptoJS/rollups/hmac-sha256.js"></script>
+    <script type="text/javascript" src="lib/CryptoJS/rollups/sha256.js"></script>
+    <script type="text/javascript" src="lib/CryptoJS/components/hmac.js"></script>
+    <script type="text/javascript" src="lib/CryptoJS/components/enc-base64.js"></script>
+    <script type="text/javascript" src="lib/url-template/url-template.js"></script>
+    <script type="text/javascript" src="lib/apiGatewayCore/sigV4Client.js"></script>
+    <script type="text/javascript" src="lib/apiGatewayCore/apiGatewayClient.js"></script>
+    <script type="text/javascript" src="lib/apiGatewayCore/simpleHttpClient.js"></script>
+    <script type="text/javascript" src="lib/apiGatewayCore/utils.js"></script>
+    <script type="text/javascript" src="apigClient.js"></script>
+    <script type="text/javascript">
+      function callLambdaFunction() {
+        try {
+            var inputTextValue = document.getElementById("inputText").value;
+            var apigClient = apigClientFactory.newClient();
+            var params = {};
+            var body = { input_text: inputTextValue };
+            apigClient.capitaliseandreversePost(params, body)
+                .then(function (result) {
+                    document.getElementById("outputText").value = JSON.parse(result.data.output).input_text;
+                })
+                .catch(function (result) {
+                    console.log(result);
+                });
+        } catch (error) {
+          console.log(error);
+        }
+        return false;
+      }
+    </script>
   </body>
 </html>
